@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Instructor Weekly Workload</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mut:#6b7280;--bd:#e3e6ea;--a:#2563eb;--p:#f59e0b;--bar:#e8ebef;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171b;--card:#1d2127;--tx:#e8eaed;--mut:#9aa3ae;--bd:#2c323a;--a:#5b8def;--p:#fbbf24;--bar:#2a3038;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14171b;--card:#1d2127;--tx:#e8eaed;--mut:#9aa3ae;--bd:#2c323a;--a:#5b8def;--p:#fbbf24;--bar:#2a3038;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1100px;margin:0 auto;padding:16px}h1{font-size:20px;margin:0}.sub{color:var(--mut);font-size:12px;margin:2px 0 12px}
+.f{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.f select,.f input{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px;font-size:13px}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px}
+.c b{display:block;font-size:22px}.c span{color:var(--mut);font-size:12px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-bottom:12px}
+.g h2,.t h2{font-size:14px;margin:0 0 8px}
+.sr{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--bd)}
+.sr:last-child{border:0}.sr i{color:var(--mut);font-style:normal}
+.t{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:720px;font-size:12.5px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}
+th{color:var(--mut);font-weight:600}td.n{text-align:right;font-variant-numeric:tabular-nums}
+.bar{display:flex;height:10px;width:140px;background:var(--bar);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%}.lg{color:var(--mut);font-size:11px;margin-top:6px}
+.tag{display:inline-block;padding:1px 6px;border-radius:5px;background:var(--bar);font-size:11px}
+</style></head><body><div class="w">
+<h1>Instructor Weekly Workload</h1>
+<div class="sub">Lectures + practice sessions only &middot; delivered classes since 1 Aug 2026 &middot; snapshot 16 Oct 2026 &middot; 49 instructors from your sheet</div>
+<div class="f">
+<select id="role"><option value="">All roles</option><option value="G">GenAI</option><option value="B">Backend</option></select>
+<select id="sem"><option value="">All semesters</option><option value="1">Semester 1</option><option value="2">Semester 2</option><option value="3">Semester 3</option><option value="4">Semester 4</option></select>
+<select id="sort"><option value="H">Sort: hours/week</option><option value="C">Sort: classes/week</option><option value="H4">Sort: last 4 weeks hours</option><option value="N">Sort: name</option></select>
+<input id="q" placeholder="Search campus or instructor">
+</div>
+<div class="k" id="k"></div>
+<div class="g"><div class="c"><h2>By semester handled (primary)</h2><div id="bs"></div></div><div class="c"><h2>By role</h2><div id="br"></div></div></div>
+<div class="c t"><h2>Instructors</h2><table><thead><tr><th>Campus</th><th>Role</th><th>Instructor</th><th>Semester(s)</th><th>Lec/wk</th><th>Prac/wk</th><th>Classes/wk</th><th>Hrs/wk</th><th>Hrs/wk last 4 wks</th><th>Split</th></tr></thead><tbody id="tb"></tbody></table>
+<div class="lg"><span style="color:var(--a)">&#9632;</span> Lecture &nbsp;<span style="color:var(--p)">&#9632;</span> Practice &nbsp;|&nbsp; Semester order: most classes first. Weeks counted from first class (includes holidays/exams).</div></div>
+</div>
+<script>
+var D=[
+["SGU","G","Shreya Rajesh Narayane","1",13.9,10.3,20.1,16.9],["SGU","G","Nuthi Yashwanth","3",3.8,7.2,9.1,6.7],
+["Annamacharya","G","G Venkata Yashaswi","1",10.8,7.8,15.5,13.1],["Annamacharya","G","Vaddi Karthik Reddy","3,1",4.3,5.7,8.3,9.8],
+["CDU","G","Katrapati Sri Chandana","1",9.0,6.5,12.9,8.8],["CDU","G","Juturu Yagna Sriya","1",10.0,6.1,13.4,10.4],
+["AMET","B","N D Hemant","3",6.5,6.4,10.8,7.3],["AMET","B","Nithila M L","1,3",6.9,5.8,8.5,6.6],
+["VGU","B","Aryan Vashishtha","3",7.0,12.1,15.9,15.6],["VGU","B","Nitish Kumar","3",7.0,10.4,14.4,13.6],
+["Geeta University","B","Skund Agarwal","1",3.9,3.3,4.8,4.7],["T S Mishra","G","Matam Sumana","1",5.1,4.3,7.9,7.3],
+["Subharti","B","Moodu Prabhakar","1",9.3,8.1,11.9,12.0],["SNS","B","Supraja K","1,3",5.5,1.4,5.0,8.6],
+["St. Peter's","B","Banavathu Prasanth Kumar","1",10.6,5.4,10.6,10.0],["St. Peter's","B","Desai Ashok Kumar Reddy","1",8.4,6.0,9.7,8.8],
+["St. Peter's","B","Bachu Venkata Sai Vara Lakshmi","1",7.5,7.0,9.8,8.8],["St. Peter's","G","Disha P S","1,4",10.1,3.6,11.4,15.2],
+["Sushant","G","Annan Sadr","1",6.1,5.1,7.7,5.3],["Lingayas","G","Divyansh Savita","1",3.2,2.7,4.9,4.6],
+["Joy","B","Deepak R","1",12.1,5.7,12.3,8.5],["Joy","B","Devi Pravallika","1",8.8,5.5,9.8,6.7],
+["Joy","G","Mohammed Idris","1",9.5,3.6,10.9,11.2],["Joy","G","Gokul Krishnan S","1,4",3.2,0.0,2.7,5.0],
+["Sri Sri","B","Bontha Naveen","1",3.2,2.8,4.1,3.5],["MRU","B","Vishala Kothapally","1",10.8,6.3,11.5,6.0],
+["MRU","B","Erri Suvarna","1",8.8,7.8,11.2,5.0],["MRU","B","Katta Sahithi","1",8.1,7.6,10.6,4.8],
+["MRU","G","Surakasi Deepak","1,2",10.5,6.6,14.3,12.1],["Sandip","B","Kaviti Murali Krishna","1",8.0,9.8,12.1,7.7],
+["Sandip","B","Sankineni Ganesh","1",0.3,6.7,4.7,3.5],["Bharath","B","Sanjana M S","1",4.3,2.4,4.7,4.4],
+["LIMAT","B","Ganapa Vyshnavi","1",3.1,2.1,3.6,3.8],["MR Tirupati","B","Gumparthi Vaishnavi","1",4.3,1.7,4.2,3.5],
+["P K Das","B","Varun Kaarthikeyan S J","1",4.1,3.0,4.9,4.5],["VIET","B","Dangeti Saatwik Prasad Babu","1,3,2",3.7,2.7,4.7,6.2],
+["MVR","B","Goriparthi Krishna Geethika","1",3.0,0.6,2.6,2.7],["BESTIU","B","Nadella Kusal","1",3.5,3.4,4.7,5.7],
+["SPIHER Chennai","B","Sakthipoorani D","1",8.2,7.0,10.2,10.3],["SGSU","G","Rishabh Kumar Pal","1,3",4.2,1.9,5.1,6.0],
+["GMRIT","B","Talanki Sai Sreekar","1",5.6,3.4,6.2,3.8],["Yenepoya Blr","B","Sadu Charishma","1",7.2,7.7,10.0,3.0],
+["Yenepoya Blr","B","Sanjay K","1",7.6,6.8,9.7,3.3],["Yenepoya Blr","G","Cheduluru Meenakshi","1",9.5,9.6,16.0,10.8],
+["SMRU","B","Kavuri Prathibha","1",15.6,7.4,15.7,11.5],["SMRU","B","Atifa Raheel","1",13.6,8.5,15.0,12.0],
+["ALARD","B","Mihir Bramhane","1",12.2,4.9,11.7,7.8],["ALARD","B","Dikshant Nanaji Shende","1",10.7,4.4,10.3,7.7],
+["Sanskriti","G","Gautam Rathore","1,3",3.1,3.0,4.6,4.2]];
+function av(a,i){return a.length?a.reduce(function(s,r){return s+(typeof i=="function"?i(r):r[i])},0)/a.length:0}
+function f1(x){return x.toFixed(1)}
+function render(){
+var role=document.getElementById("role").value,sem=document.getElementById("sem").value,q=document.getElementById("q").value.toLowerCase(),so=document.getElementById("sort").value;
+var R=D.filter(function(r){return(!role||r[1]==role)&&(!sem||r[3].split(",").indexOf(sem)>=0)&&(!q||(r[0]+" "+r[2]).toLowerCase().indexOf(q)>=0)});
+var key={H:function(r){return -r[6]},C:function(r){return -(r[4]+r[5])},H4:function(r){return -r[7]}};
+R.sort(function(a,b){return so=="N"?a[2].localeCompare(b[2]):key[so](a)-key[so](b)});
+var cls=function(r){return r[4]+r[5]};
+document.getElementById("k").innerHTML=[[R.length,"Instructors"],[f1(av(R,cls)),"Avg classes / week"],[f1(av(R,4)),"Avg lectures / week"],[f1(av(R,5)),"Avg practice / week"],[f1(av(R,6)),"Avg hours / week"],[f1(av(R,7)),"Avg hrs/wk, last 4 weeks"]].map(function(k){return'<div class="c"><b>'+k[0]+'</b><span>'+k[1]+'</span></div>'}).join("");
+var bs="";["1","2","3","4"].forEach(function(s){var g=R.filter(function(r){return r[3].charAt(0)==s});if(g.length)bs+='<div class="sr"><span>Semester '+s+' <i>('+g.length+' instructors)</i></span><span>'+f1(av(g,cls))+' classes &middot; '+f1(av(g,6))+' hrs/wk</span></div>'});
+document.getElementById("bs").innerHTML=bs||"No data";
+var br="";[["G","GenAI"],["B","Backend"]].forEach(function(x){var g=R.filter(function(r){return r[1]==x[0]});if(g.length)br+='<div class="sr"><span>'+x[1]+' <i>('+g.length+')</i></span><span>'+f1(av(g,cls))+' classes &middot; '+f1(av(g,6))+' hrs/wk</span></div>'});
+document.getElementById("br").innerHTML=br||"No data";
+var mx=Math.max.apply(null,D.map(cls));
+document.getElementById("tb").innerHTML=R.map(function(r){
+return"<tr><td>"+r[0]+'</td><td><span class="tag">'+(r[1]=="G"?"GenAI":"Backend")+"</span></td><td>"+r[2]+"</td><td>Sem "+r[3].split(",").join(", ")+'</td><td class="n">'+f1(r[4])+'</td><td class="n">'+f1(r[5])+'</td><td class="n">'+f1(cls(r))+'</td><td class="n">'+f1(r[6])+'</td><td class="n">'+f1(r[7])+'</td><td><div class="bar"><i style="width:'+(r[4]/mx*100)+'%;background:var(--a)"></i><i style="width:'+(r[5]/mx*100)+'%;background:var(--p)"></i></div></td></tr>'}).join("")}
+["role","sem","sort"].forEach(function(i){document.getElementById(i).onchange=render});document.getElementById("q").oninput=render;render();
+</script></body></html>
